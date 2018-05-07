@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SqliteSample3</string>
+    <string name="confirm_delete">Are you sure you want to delete this row?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="save">save</string>
+    <string name="enter_name_hint">Enter name.</string>
 </resources>

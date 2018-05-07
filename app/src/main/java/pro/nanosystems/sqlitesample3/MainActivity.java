@@ -29,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        findViewById(R.id.addMain).setOnClickListener(e->{
+            Intent i = new Intent(this, AddEmpActivity.class);
+            startActivity(i);
+        });
+
         dbHelper = new DbHelper(context);
         db = dbHelper.getReadableDatabase();
         cursor = db.query(Employees.Employee.JOIN, Employees.Employee.COLUMNS,
@@ -47,19 +53,14 @@ public class MainActivity extends AppCompatActivity {
                     (AdapterView<?> parent, View view, int position, final long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Confirm!").
-                        setMessage("Are you sure you want to delete this row?").
-                        setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        setMessage(R.string.confirm_delete).
+                        setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 db.delete(Employees.Employee.TABLE, "_id = " + id, null);
-                                Cursor c = db.
-                                        query(Employees.Employee.JOIN,
-                                                Employees.Employee.COLUMNS,
-                                        null, null, null,
-                                        null, null);
-                                empAdapter.changeCursor(c);
+                                updateEmpList();
                             }
-                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -88,5 +89,24 @@ empList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         startActivity(i);
     }
 });
+    }
+
+    private void updateEmpList() {
+        Cursor c = db.
+                query(Employees.Employee.JOIN,
+                        Employees.Employee.COLUMNS,
+                        null, null, null,
+                        null, null);
+        empAdapter.changeCursor(c);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateEmpList();
+    }
+
+    public void jobs(View view) {
+        startActivity(new Intent(this, JobsActivity.class));
     }
 }
